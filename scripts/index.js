@@ -24,7 +24,6 @@ function createCard(name, link, deleteCard) {
 // Вывести карточки на страницу
 function initalizeCards(cards) {
     // Контейнер ищем тут, чтобы искать только один раз
-    const cardContainer = document.querySelector('.places__list');
     cards.forEach(item => {
         const cardElement = createCard(item.name, item.link, deleteCard);
         cardContainer.appendChild(cardElement);
