@@ -1,3 +1,7 @@
+import './styles/index.css';
+import {initialCards} from './cards.js'
+import {cardContainer} from './domElements.js'
+
 // Функция удаления карточки
 function deleteCard(event) {
     event.target.closest('.places__item').remove();
