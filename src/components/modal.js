@@ -1,6 +1,3 @@
-import {popups, profileEditPopup, cardContainer} from './domElements.js'
-import {createCard} from './cards.js'
-
 export function openPopup(popup) {
     popup.classList.add('popup_is-opened');
 
@@ -12,7 +9,7 @@ export function openPopup(popup) {
          event.stopPropagation();
     });
 
-    //! Кроме того, что мы показали окно надо еще навесить скрытий по Esc
+    //! Кроме того, что мы показали окно надо еще навесить скрытие по Esc
     document.addEventListener('keyup', closePopupbyEsc);
 }
 
@@ -30,64 +27,17 @@ export function closeOpenedPopupByOverlay(event){
     }
 }
 
-export function closeOpenedPopup(event){
+//! Вспомогательная фунация для закрытия открытого popup 
+function closeOpenedPopup(event){
     const popup = document.querySelector('.popup_is-opened');
     if(popup !== null){
         closePopup(popup);
     }
 }
 
-
-function setupWindow(popupClass, openButonClass){
-    const popupWindow = document.querySelector(popupClass);
-    const popupCloseBtn = popupWindow.querySelector('.popup__close');
-    const openBtn = document.querySelector(openButonClass);
-
-    
-    openBtn.addEventListener('click', (event)=>{
-        popupWindow.classList.add('popup_is-opened');
-    });
-
-    popupCloseBtn.addEventListener('click', (event)=>{
-        popupWindow.classList.remove('popup_is-opened');
-    });
-}
-
+//! Вспомогательная фунация для закрытия открытого popup по Escape 
 function closePopupbyEsc(event){
-    console.log(event);
     if(event.key === "Escape"){
         closeOpenedPopup();
     }
 }
-
-const formEditProfile = document.forms['edit-profile'];
-const formAddCard = document.forms['new-place'];
-
-function handleEditProfileFormSubmit(evt) {
-    evt.preventDefault(); 
-
-    const nameInput = formEditProfile.name;
-    const jobInput = formEditProfile.description;
-
-    const profileTitle = document.querySelector('.profile__title');
-    const profileDescription = document.querySelector('.profile__description');
-
-    profileTitle.textContent = nameInput.value;
-    profileDescription.textContent = jobInput.value;
-    closePopup(profileEditPopup);
-}
-
-function handleAddCardFormSubmit(evt) {
-    evt.preventDefault(); 
-
-    const placeName = formAddCard['place-name'].value;
-    const link = formAddCard.link.value;
-
-    const cardElement = createCard(placeName, link);
-    cardContainer.prepend(cardElement);
-
-    closePopup(formAddCard);
-}
-
-formEditProfile.addEventListener('submit', handleEditProfileFormSubmit);
-formAddCard.addEventListener('submit', handleAddCardFormSubmit);

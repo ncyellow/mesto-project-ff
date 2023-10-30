@@ -1,5 +1,4 @@
 import {imagePopup} from "./domElements"
-import {openPopup} from "./modal";
 
 export const initialCards = [
     {
@@ -29,18 +28,17 @@ export const initialCards = [
 ];
 
 // Функция удаления карточки
-function deleteCard(event) {
+export function deleteCard(event) {
   event.target.closest('.places__item').remove();
 }
 
 // Обработка лайка
-function likeCard(event){
+export function likeCard(event){
   event.target.classList.toggle('card__like-button_is-active');
 }
 
-
 // Функция создания карточки
-export function createCard(name, link) {
+export function createCard(name, link, likeCard, deleteCard, openPopup) {
   const cardTemplate = document.querySelector('#card-template').content;
   const cardElement = cardTemplate.querySelector('.places__item').cloneNode(true);
 
@@ -65,6 +63,5 @@ export function createCard(name, link) {
   const buttonLike = cardElement.querySelector('.card__like-button');
   buttonLike.addEventListener('click', likeCard);
 
-  // по требованиям задания функция возвращает DOM элемент карточки
   return cardElement;
 }
