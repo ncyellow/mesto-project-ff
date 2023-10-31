@@ -1,7 +1,7 @@
 import './styles/index.css';
 import {createCard, likeCard, deleteCard, initialCards} from './components/cards.js'
-import {cardContainer, profileEditPopup, popups, profileTitle, profileDescription, formAddCard, formEditProfile} from './components/domElements.js'
-import {closeOpenedPopupByOverlay, openPopup, closePopup} from './components/modal.js'
+import {cardContainer, profileEditPopup, addCardPopup, popups, profileTitle, profileDescription, formAddCard, formEditProfile} from './components/domElements.js'
+import {closeOpenedPopupByEvent, openPopup, closePopup} from './components/modal.js'
 
 // Вывести карточки на страницу
 function initalizeCards(cards) {
@@ -14,7 +14,7 @@ function initalizeCards(cards) {
 
 //! Инициализация открытия закрытия попапов
 function initPopups(popups){
-    document.addEventListener('click', closeOpenedPopupByOverlay);
+    document.addEventListener('click', closeOpenedPopupByEvent);
     popups.forEach(item => {
         const openBtn = item.openBtn;
         const popupWindow = item.popupWnd;
@@ -45,7 +45,7 @@ function handleAddCardFormSubmit(evt) {
 
     const cardElement = createCard(placeName, link, likeCard, deleteCard, openPopup);
     cardContainer.prepend(cardElement);
-    closePopup(formAddCard);
+    closePopup(addCardPopup);
 }
 
 function initForms(){

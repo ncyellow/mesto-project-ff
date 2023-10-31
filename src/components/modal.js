@@ -1,30 +1,40 @@
 export function openPopup(popup) {
     popup.classList.add('popup_is-opened');
 
+    //! Вешаем закрытие на кнопку
     const popupCloseBtn = popup.querySelector('.popup__close');
-    popupCloseBtn.addEventListener('click', event => closePopup(popup));
+    popupCloseBtn.addEventListener('click', closeOpenedPopupByEvent);
 
     const popupContent = popup.querySelector('.popup__content');
-    popupContent.addEventListener('click', event => {
-         event.stopPropagation();
-    });
+    popupContent.addEventListener('click', stopPropagation);
 
     //! Кроме того, что мы показали окно надо еще навесить скрытие по Esc
     document.addEventListener('keyup', closePopupbyEsc);
 }
 
+//! Закрытие окна и отписка от всех событий
 export function closePopup(popup){
-    popup.closest('.popup').classList.remove('popup_is-opened');
-    //! Удаляем подписку при закрытии по требованию ТЗ
+    popup.classList.remove('popup_is-opened');
+
+    const popupCloseBtn = popup.querySelector('.popup__close');
+    popupCloseBtn.removeEventListener('click', closeOpenedPopupByEvent);
+
+    const popupContent = popup.querySelector('.popup__content');
+    popupContent.removeEventListener('click', stopPropagation);
+
     document.removeEventListener('keyup', closePopupbyEsc);
 }
 
-
-export function closeOpenedPopupByOverlay(event){
+export function closeOpenedPopupByEvent(event){
     const popup = event.target.closest('.popup');
     if(popup !== null && popup.classList.contains('popup_is-opened')){
         closePopup(popup);
     }
+}
+
+//! Блокировка проброса событий к родитилям
+function stopPropagation(event){
+    event.stopPropagation();
 }
 
 //! Вспомогательная фунация для закрытия открытого popup 
