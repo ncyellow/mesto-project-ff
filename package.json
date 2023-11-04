@@ -5,7 +5,9 @@
   "main": "babel.config.js",
   "scripts": {
     "build": "webpack --mode production",
-    "dev": "webpack serve"
+    "dev": "webpack serve",
+    "check": "prettier --check \"src/**/*.js\"",
+    "format": "prettier --write \"src/**/*.js\""
   },
   "author": "",
   "license": "ISC",
@@ -25,6 +27,8 @@
     "webpack-dev-server": "^4.15.1"
   },
   "dependencies": {
-    "core-js": "^3.33.1"
+    "core-js": "^3.33.1",
+    "prettier": "^3.0.3",
+    "stylelint": "^15.11.0"
   }
 }
