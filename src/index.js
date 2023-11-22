@@ -18,6 +18,7 @@ import {
   imagePopupCaption,
 } from './components/domElements.js';
 import { openPopup, closePopup } from './components/modal.js';
+import { enableValidation } from './components/validation.js';
 
 const popups = [
   {
@@ -135,3 +136,4 @@ function initForms(forms) {
 initalizeCards(initialCards);
 initPopups(popups);
 initForms(forms);
+enableValidation();
