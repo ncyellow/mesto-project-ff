@@ -18,7 +18,7 @@ import {
   imagePopupCaption,
 } from './components/domElements.js';
 import { openPopup, closePopup } from './components/modal.js';
-import { enableValidation } from './components/validation.js';
+import { enableValidation, clearValidation } from './components/validation.js';
 
 const popups = [
   {
@@ -68,6 +68,15 @@ const forms = [
   },
 ];
 
+const validationConfig = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__error_visible'
+};
+
 //! Прикладная логика обработки клика по картинке
 function handleImageClick(event) {
   const image = event.target;
@@ -106,6 +115,7 @@ function initPopups(popups) {
     openBtn.addEventListener('click', (event) => {
       openPopup(popupWnd);
       openCallBack();
+      clearValidation(popupWnd, validationConfig);
     });
   });
 
@@ -136,4 +146,4 @@ function initForms(forms) {
 initalizeCards(initialCards);
 initPopups(popups);
 initForms(forms);
-enableValidation();
+enableValidation(validationConfig); 
