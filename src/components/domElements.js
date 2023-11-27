@@ -14,4 +14,6 @@ export const imagePopupSource = document.querySelector('.popup__image');
 export const imagePopupCaption = document.querySelector('.popup__caption');
 export const profileEditPopup = document.querySelector('.popup_type_edit');
 export const addCardPopup = document.querySelector('.popup_type_new-card');
-export const editAvatarPopup = document.querySelector('.popup_type_edit-avatar');
+export const editAvatarPopup = document.querySelector(
+  '.popup_type_edit-avatar'
+);

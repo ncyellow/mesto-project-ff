@@ -1,9 +1,5 @@
 import './styles/index.css';
-import {
-  createCard,
-  likeCard,
-  deleteCard,
-} from './components/cards.js';
+import { createCard, likeCard, deleteCard } from './components/cards.js';
 import {
   cardContainer,
   profileEditPopup,
@@ -21,12 +17,12 @@ import {
 } from './components/domElements.js';
 import { openPopup, closePopup } from './components/modal.js';
 import { enableValidation, clearValidation } from './components/validation.js';
-import { 
+import {
   getInitialCards,
   getProfileInfo,
   updateProfileInfo,
   addNewCard,
-  editAvatar
+  editAvatar,
 } from './components/api.js';
 
 const popups = [
@@ -65,38 +61,35 @@ const forms = [
 
       formEditProfile.save.textContent = 'Сохранение...';
       updateProfileInfo(nameInput.value, jobInput.value)
-        .then(data => {
+        .then((data) => {
           profileTitle.textContent = nameInput.value;
           profileDescription.textContent = jobInput.value;
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
         })
-        .finally(()=>{
+        .finally(() => {
           formEditProfile.save.textContent = 'Сохранить';
         });
-
-      
     },
   },
   {
     form: formAddCard,
     popupWnd: addCardPopup,
     closeCallBack: function () {
-  
       const placeName = formAddCard['place-name'].value;
       const link = formAddCard.link.value;
       formAddCard.save.textContent = 'Сохранение...';
       addNewCard(placeName, link)
-        .then(card => {
+        .then((card) => {
           const cardInfo = buildCardInfo(card);
           const cardElement = createCard(cardInfo, profileOwner);
           cardContainer.prepend(cardElement);
-    
+
           formAddCard['place-name'].value = '';
-          formAddCard.link.value = '';    
+          formAddCard.link.value = '';
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
         })
         .finally(() => {
@@ -111,11 +104,11 @@ const forms = [
       const link = formEditAvatar.link.value;
       formAddCard.save.textContent = 'Сохранение...';
       editAvatar(link)
-        .then(card => {
+        .then((card) => {
           profileImg.style.backgroundImage = `url(${card.avatar})`;
           formEditAvatar.link.value = '';
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
         })
         .finally(() => {
@@ -131,9 +124,8 @@ const validationConfig = {
   submitButtonSelector: '.popup__button',
   inactiveButtonClass: 'popup__button_disabled',
   inputErrorClass: 'popup__input_type_error',
-  errorClass: 'popup__error_visible'
+  errorClass: 'popup__error_visible',
 };
-
 
 //! Тут мы будет хранить данные по нашему пользователю, он нужен чтобы помечать можно ли нам удалять карточки.
 //! Так как мы можем удалять только свои карточки
@@ -170,7 +162,7 @@ function initalizeCards(cards) {
   });
 }
 
-function initializeProfile(profileInfo){
+function initializeProfile(profileInfo) {
   profileTitle.textContent = profileInfo.name;
   profileDescription.textContent = profileInfo.about;
   profileImg.style.backgroundImage = `url(${profileInfo.avatar})`;
@@ -187,7 +179,7 @@ function fetchData() {
       profileOwner = profile;
       initalizeCards(cards);
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
     });
 }
@@ -229,4 +221,4 @@ function initForms(forms) {
 fetchData();
 initPopups(popups);
 initForms(forms);
-enableValidation(validationConfig); 
+enableValidation(validationConfig);
