@@ -9,6 +9,26 @@
   background-position: center;
   margin: 0 29px 0 0;
   /*Макет очень кривоват, как считать этот отступ я хз. Проявите тут лояльность пока что*/
+
+  /**
+    По центру у нас теперь иконка карандаша - делаем flex
+  */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile__image:hover {
+  opacity: 0.75;
+}
+
+/**
+  Добавляем по ховеру отображение иконки
+*/
+.profile__image:hover .profile__image-edit {
+  width: 26px;
+  height: 26px;
+  background-image: url('../../../images/pen.svg');
 }
 
 @media screen and (max-width: 740px) {

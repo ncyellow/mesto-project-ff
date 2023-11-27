@@ -3,12 +3,12 @@ import {
   createCard,
   likeCard,
   deleteCard,
-  initialCards,
 } from './components/cards.js';
 import {
   cardContainer,
   profileEditPopup,
   addCardPopup,
+  profileImg,
   profileTitle,
   profileDescription,
   formAddCard,
@@ -16,9 +16,18 @@ import {
   imagePopup,
   imagePopupSource,
   imagePopupCaption,
+  formEditAvatar,
+  editAvatarPopup,
 } from './components/domElements.js';
 import { openPopup, closePopup } from './components/modal.js';
 import { enableValidation, clearValidation } from './components/validation.js';
+import { 
+  getInitialCards,
+  getProfileInfo,
+  updateProfileInfo,
+  addNewCard,
+  editAvatar
+} from './components/api.js';
 
 const popups = [
   {
@@ -37,6 +46,13 @@ const popups = [
       //! По этому тут пусто
     },
   },
+  {
+    openBtn: document.querySelector('.profile__image'),
+    popupWnd: editAvatarPopup,
+    openCallBack: function () {
+      //! ПО тз нет требования подставлять текущую картинку
+    },
+  },
 ];
 
 const forms = [
@@ -47,23 +63,64 @@ const forms = [
       const nameInput = formEditProfile.name;
       const jobInput = formEditProfile.description;
 
-      profileTitle.textContent = nameInput.value;
-      profileDescription.textContent = jobInput.value;
+      formEditProfile.save.textContent = 'Сохранение...';
+      updateProfileInfo(nameInput.value, jobInput.value)
+        .then(data => {
+          profileTitle.textContent = nameInput.value;
+          profileDescription.textContent = jobInput.value;
+        })
+        .catch(err => {
+          console.log(err);
+        })
+        .finally(()=>{
+          formEditProfile.save.textContent = 'Сохранить';
+        });
+
+      
     },
   },
   {
     form: formAddCard,
     popupWnd: addCardPopup,
     closeCallBack: function () {
+  
       const placeName = formAddCard['place-name'].value;
       const link = formAddCard.link.value;
-
-      const cardInfo = buildCardInfo(placeName, link);
-      const cardElement = createCard(cardInfo);
-      cardContainer.prepend(cardElement);
-
-      formAddCard['place-name'].value = '';
-      formAddCard.link.value = '';
+      formAddCard.save.textContent = 'Сохранение...';
+      addNewCard(placeName, link)
+        .then(card => {
+          const cardInfo = buildCardInfo(card);
+          const cardElement = createCard(cardInfo, profileOwner);
+          cardContainer.prepend(cardElement);
+    
+          formAddCard['place-name'].value = '';
+          formAddCard.link.value = '';    
+        })
+        .catch(err => {
+          console.log(err);
+        })
+        .finally(() => {
+          formAddCard.save.textContent = 'Сохранить';
+        });
+    },
+  },
+  {
+    form: formEditAvatar,
+    popupWnd: editAvatarPopup,
+    closeCallBack: function () {
+      const link = formEditAvatar.link.value;
+      formAddCard.save.textContent = 'Сохранение...';
+      editAvatar(link)
+        .then(card => {
+          profileImg.style.backgroundImage = `url(${card.avatar})`;
+          formEditAvatar.link.value = '';
+        })
+        .catch(err => {
+          console.log(err);
+        })
+        .finally(() => {
+          formAddCard.save.textContent = 'Сохранить';
+        });
     },
   },
 ];
@@ -77,6 +134,11 @@ const validationConfig = {
   errorClass: 'popup__error_visible'
 };
 
+
+//! Тут мы будет хранить данные по нашему пользователю, он нужен чтобы помечать можно ли нам удалять карточки.
+//! Так как мы можем удалять только свои карточки
+let profileOwner;
+
 //! Прикладная логика обработки клика по картинке
 function handleImageClick(event) {
   const image = event.target;
@@ -89,13 +151,12 @@ function handleImageClick(event) {
 }
 
 //! Вспомогательная фунация создания объекта по на работе карточки
-function buildCardInfo(name, link) {
+function buildCardInfo(card) {
   return {
-    name: name,
-    link: link,
-    likeCard: likeCard,
-    deleteCard: deleteCard,
-    handleImageClick: handleImageClick,
+    card,
+    likeCard,
+    deleteCard,
+    handleImageClick,
   };
 }
 
@@ -103,10 +164,32 @@ function buildCardInfo(name, link) {
 function initalizeCards(cards) {
   // Контейнер ищем тут, чтобы искать только один раз
   cards.forEach((item) => {
-    const cardInfo = buildCardInfo(item.name, item.link);
-    const cardElement = createCard(cardInfo);
+    const cardInfo = buildCardInfo(item);
+    const cardElement = createCard(cardInfo, profileOwner);
     cardContainer.appendChild(cardElement);
   });
+}
+
+function initializeProfile(profileInfo){
+  profileTitle.textContent = profileInfo.name;
+  profileDescription.textContent = profileInfo.about;
+  profileImg.style.backgroundImage = `url(${profileInfo.avatar})`;
+}
+
+// Вывести карточки на страницу
+function fetchData() {
+  //! Инициализация карточек
+  const promiseCards = getInitialCards();
+  const promiseProfile = getProfileInfo();
+  Promise.all([promiseCards, promiseProfile])
+    .then(([cards, profile]) => {
+      initializeProfile(profile);
+      profileOwner = profile;
+      initalizeCards(cards);
+    })
+    .catch(err => {
+      console.log(err);
+    });
 }
 
 //! Инициализация открытия закрытия попапов
@@ -143,7 +226,7 @@ function initForms(forms) {
   });
 }
 
-initalizeCards(initialCards);
+fetchData();
 initPopups(popups);
 initForms(forms);
 enableValidation(validationConfig); 
