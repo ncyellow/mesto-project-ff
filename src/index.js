@@ -55,7 +55,7 @@ const forms = [
   {
     form: formEditProfile,
     popupWnd: profileEditPopup,
-    closeCallBack: function () {
+    closeCallBack: function (closePopupHandler) {
       const nameInput = formEditProfile.name;
       const jobInput = formEditProfile.description;
 
@@ -64,6 +64,7 @@ const forms = [
         .then((data) => {
           profileTitle.textContent = nameInput.value;
           profileDescription.textContent = jobInput.value;
+          closePopupHandler();
         })
         .catch((err) => {
           console.log(err);
@@ -76,7 +77,7 @@ const forms = [
   {
     form: formAddCard,
     popupWnd: addCardPopup,
-    closeCallBack: function () {
+    closeCallBack: function (closePopupHandler) {
       const placeName = formAddCard['place-name'].value;
       const link = formAddCard.link.value;
       formAddCard.save.textContent = 'Сохранение...';
@@ -88,31 +89,33 @@ const forms = [
 
           formAddCard['place-name'].value = '';
           formAddCard.link.value = '';
+          closePopupHandler();
         })
         .catch((err) => {
           console.log(err);
         })
         .finally(() => {
-          formAddCard.save.textContent = 'Сохранить';
+          formAddCard.save.textContent = 'Создать';
         });
     },
   },
   {
     form: formEditAvatar,
     popupWnd: editAvatarPopup,
-    closeCallBack: function () {
+    closeCallBack: function (closePopupHandler) {
       const link = formEditAvatar.link.value;
-      formAddCard.save.textContent = 'Сохранение...';
+      formEditAvatar.save.textContent = 'Сохранение...';
       editAvatar(link)
         .then((card) => {
           profileImg.style.backgroundImage = `url(${card.avatar})`;
           formEditAvatar.link.value = '';
+          closePopupHandler();
         })
         .catch((err) => {
           console.log(err);
         })
         .finally(() => {
-          formAddCard.save.textContent = 'Сохранить';
+          formEditAvatar.save.textContent = 'Сохранить';
         });
     },
   },
@@ -158,7 +161,7 @@ function initalizeCards(cards) {
   cards.forEach((item) => {
     const cardInfo = buildCardInfo(item);
     const cardElement = createCard(cardInfo, profileOwner);
-    cardContainer.appendChild(cardElement);
+    cardContainer.append(cardElement);
   });
 }
 
@@ -212,8 +215,7 @@ function initForms(forms) {
   forms.forEach(({ form, popupWnd, closeCallBack }) => {
     form.addEventListener('submit', (evt) => {
       evt.preventDefault();
-      closePopup(popupWnd);
-      closeCallBack();
+      closeCallBack(() => closePopup(popupWnd));
     });
   });
 }

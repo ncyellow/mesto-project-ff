@@ -3,9 +3,6 @@ export function enableValidation(validationConfig) {
     document.querySelectorAll(validationConfig.formSelector)
   );
   formList.forEach((formElement) => {
-    formElement.addEventListener('submit', function (evt) {
-      evt.preventDefault();
-    });
     setEventListeners(formElement, validationConfig);
   });
 }
@@ -18,7 +15,7 @@ export function clearValidation(formElement, validationConfig) {
     validationConfig.submitButtonSelector
   );
   inputList.forEach((inputElement) => {
-    checkInputValidity(formElement, inputElement, validationConfig);
+    hideInputError(formElement, inputElement, validationConfig);
   });
   toggleButtonState(inputList, buttonElement, validationConfig);
 }
@@ -51,8 +48,10 @@ function hasInvalidInput(inputList) {
 function toggleButtonState(inputList, buttonElement, validationConfig) {
   if (hasInvalidInput(inputList)) {
     buttonElement.classList.add(validationConfig.inactiveButtonClass);
+    buttonElement.disabled = true;
   } else {
     buttonElement.classList.remove(validationConfig.inactiveButtonClass);
+    buttonElement.disabled = false;
   }
 }
 

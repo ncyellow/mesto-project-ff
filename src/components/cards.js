@@ -1,11 +1,10 @@
 import { addLikeById, deleteCardById, removeLikeById } from './api';
 
 // Функция удаления карточки
-export function deleteCard(event) {
-  const cardId = event.target.closest('.places__item').id;
+export function deleteCard(cardId, cardElement) {
   deleteCardById(cardId)
     .then((res) => {
-      event.target.closest('.places__item').remove();
+      cardElement.remove();
     })
     .catch((err) => {
       console.log(err);
@@ -13,11 +12,9 @@ export function deleteCard(event) {
 }
 
 // Обработка лайка
-export function likeCard(event) {
-  const card = event.target.closest('.places__item');
-  const cardId = card.id;
+export function likeCard(cardId, buttonLike) {
+  const card = buttonLike.closest('.places__item');
   const spanLike = card.querySelector('.card__like-counter');
-  const buttonLike = event.target;
   if (buttonLike.classList.contains('card__like-button_is-active')) {
     removeLikeById(cardId)
       .then((res) => {
@@ -50,7 +47,6 @@ export function createCard(cardInfo, profileOwner) {
     .querySelector('.places__item')
     .cloneNode(true);
 
-  cardElement.setAttribute('id', cardInfo.card._id);
   cardElement.querySelector('.card__title').textContent = cardInfo.card.name;
 
   const cardImage = cardElement.querySelector('.card__image');
@@ -61,12 +57,16 @@ export function createCard(cardInfo, profileOwner) {
 
   const buttonDelete = cardElement.querySelector('.card__delete-button');
   if (cardInfo.card.owner._id == profileOwner._id) {
-    buttonDelete.addEventListener('click', cardInfo.deleteCard);
+    buttonDelete.addEventListener('click', () =>
+      cardInfo.deleteCard(cardInfo.card._id, cardElement)
+    );
   } else {
     buttonDelete.classList.add('card__delete-button_is-hidden');
   }
   const buttonLike = cardElement.querySelector('.card__like-button');
-  buttonLike.addEventListener('click', cardInfo.likeCard);
+  buttonLike.addEventListener('click', () =>
+    cardInfo.likeCard(cardInfo.card._id, buttonLike)
+  );
 
   const spanLike = cardElement.querySelector('.card__like-counter');
   updateLike(spanLike, cardInfo.card);
